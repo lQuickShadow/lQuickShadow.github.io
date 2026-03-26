@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хранилище данных - GitHub Pages</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        h1:before {
+            content: "📝";
+            font-size: 32px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        button.secondary {
+            background: #6c757d;
+        }
+        button.danger {
+            background: #dc3545;
+        }
+        button.success {
+            background: #28a745;
+        }
+        .data-list {
+            margin-top: 20px;
+        }
+        .data-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .data-item strong {
+            color: #667eea;
+        }
+        .data-item small {
+            color: #999;
+            font-size: 12px;
+        }
+        .empty {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .file-input-label {
+            background: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .file-input-label:hover {
+            background: #5a6268;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Хранилище данных</h1>
+            <p>Вводите данные — они сохраняются в браузере. Для экспорта/импорта используйте кнопки ниже.</p>
+            
+            <div class="form-group">
+                <label>📌 Название / заголовок</label>
+                <input type="text" id="title" placeholder="Например: Моя заметка">
+            </div>
+            
+            <div class="form-group">
+                <label>📄 Содержимое</label>
+                <textarea id="content" placeholder="Введите ваши данные здесь..."></textarea>
+            </div>
+            
+            <div class="controls">
+                <button id="saveBtn">💾 Сохранить данные</button>
+                <button id="exportBtn" class="success">📥 Экспорт в файл</button>
+                <label class="file-input-label">
+                    📤 Импорт из файла
+                    <input type="file" id="importFile" accept=".json">
+                </label>
+                <button id="clearAllBtn" class="danger">🗑️ Очистить всё</button>
+            </div>
+            
+            <div id="status" class="status"></div>
+        </div>
+        
+        <div class="card">
+            <h2 style="margin-top: 0;">📋 Сохранённые данные</h2>
+            <div id="dataContainer" class="data-list">
+                <div class="empty">Нет сохранённых данных. Добавьте первую запись!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ключ для localStorage
+        const STORAGE_KEY = 'app_data_items';
+        
+        // Загрузка данных из localStorage
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                return JSON.parse(stored);
+            }
+            return [];
+        }
+        
+        // Сохранение данных в localStorage
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            renderDataList();
+        }
+        
+        // Отображение списка данных
+        function renderDataList() {
+            const data = loadData();
+            const container = document.getElementById('dataContainer');
+            
+            if (data.length === 0) {
+                container.innerHTML = '<div class="empty">📭 Нет сохранённых данных. Добавьте первую запись!</div>';
+                return;
+            }
+            
+            container.innerHTML = data.map((item, index) => `
+                <div class="data-item">
+                    <strong>${escapeHtml(item.title || 'Без названия')}</strong>
+                    <p style="margin: 10px 0 5px 0;">${escapeHtml(item.content || '')}</p>
+                    <small>📅 ${new Date(item.timestamp).toLocaleString('ru-RU')}</small>
+                    <button class="delete-item" data-index="${index}" style="background: #dc3545; padding: 5px 10px; font-size: 12px; margin-top: 10px;">🗑️ Удалить</button>
+                </div>
+            `).join('');
+            
+            // Добавляем обработчики для кнопок удаления
+            document.querySelectorAll('.delete-item').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(btn.dataset.index);
+                    deleteItem(index);
+                });
+            });
+        }
+        
+        // Удаление одной записи
+        function deleteItem(index) {
+            const data = loadData();
+            data.splice(index, 1);
+            saveData(data);
+            showStatus('Запись удалена', 'success');
+        }
+        
+        // Добавление новой записи
+        function addData() {
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value.trim();
+            
+            if (!title && !content) {
+                showStatus('Заполните хотя бы одно поле (название или содержимое)', 'error');
+                return;
+            }
+            
+            const data = loadData();
+            data.unshift({
+                id: Date.now(),
+                title: title,
+                content: content,
+                timestamp: Date.now()
+            });
+            
+            saveData(data);
+            
+            // Очищаем поля
+            document.getElementById('title').value = '';
+            document.getElementById('content').value = '';
+            
+            showStatus('✅ Данные сохранены!', 'success');
+        }
+        
+        // Экспорт в файл
+        function exportToFile() {
+            const data = loadData();
+            if (data.length === 0) {
+                showStatus('Нет данных для экспорта', 'error');
+                return;
+            }
+            
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup_${new Date().toISOString().slice(0,19)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('📁 Данные экспортированы в файл', 'success');
+        }
+        
+        // Импорт из файла
+        function importFromFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        saveData(importedData);
+                        showStatus(`✅ Импортировано ${importedData.length} записей`, 'success');
+                    } else {
+                        showStatus('Ошибка: файл должен содержать массив данных', 'error');
+                    }
+                } catch (err) {
+                    showStatus('Ошибка: неверный формат JSON файла', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Очистка всех данных
+        function clearAll() {
+            if (confirm('Вы уверены, что хотите удалить ВСЕ сохранённые данные? Отменить будет невозможно.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderDataList();
+                showStatus('🗑️ Все данные удалены', 'success');
+            }
+        }
+        
+        // Показать статус
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Защита от XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+        
+        // Инициализация
+        document.getElementById('saveBtn').addEventListener('click', addData);
+        document.getElementById('exportBtn').addEventListener('click', exportToFile);
+        document.getElementById('clearAllBtn').addEventListener('click', clearAll);
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                importFromFile(e.target.files[0]);
+                e.target.value = ''; // сбрасываем input
+            }
+        });
+        
+        // Загружаем данные при старте
+        renderDataList();
+    </script>
+</body>
+</html>
