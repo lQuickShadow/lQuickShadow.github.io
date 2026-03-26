@@ -1,2 +1,0 @@
-# lQuickShadow.github.io
-demo
