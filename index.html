@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Складской учёт | Принтеры, кабели, мышки</title>
+    <title>Складской учёт | JSON хранилище</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
             padding: 24px;
@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* Header */
         .header {
             background: linear-gradient(135deg, #1e293b, #0f172a);
             border-radius: 28px;
@@ -40,11 +39,6 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 8px;
-        }
-
-        .header p {
-            opacity: 0.8;
-            font-size: 0.95rem;
         }
 
         .stats-row {
@@ -68,7 +62,6 @@
             margin-right: 8px;
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 24px;
@@ -86,7 +79,6 @@
             gap: 10px;
         }
 
-        /* Форма добавления */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -146,7 +138,6 @@
             background: #10b981;
         }
 
-        /* Таблица товаров */
         .table-container {
             overflow-x: auto;
         }
@@ -203,7 +194,6 @@
             font-size: 12px;
         }
 
-        /* Токен панель */
         .token-panel {
             background: #fef3c7;
             border: 1px solid #f59e0b;
@@ -212,12 +202,6 @@
             margin-bottom: 24px;
         }
 
-        .token-panel input {
-            background: white;
-            margin-bottom: 12px;
-        }
-
-        /* Статус */
         .status-toast {
             position: fixed;
             bottom: 24px;
@@ -232,7 +216,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        /* Модалка редактирования */
         .modal {
             display: none;
             position: fixed;
@@ -254,21 +237,27 @@
             width: 90%;
         }
 
+        .file-info {
+            background: #e8f0fe;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             body { padding: 16px; }
             .card { padding: 20px; }
             th, td { padding: 12px 8px; font-size: 13px; }
-            .action-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>
-            📦 Складской учёт
-        </h1>
-        <p>Принтеры, кабели, мышки и другие товары — данные хранятся в GitHub Issues</p>
+        <h1>📦 Складской учёт</h1>
+        <p>Принтеры, кабели, мышки — данные хранятся в <strong>data.json</strong> в репозитории</p>
         <div class="stats-row" id="statsRow">
             <div class="stat-card">📊 Всего: <span id="totalCount">0</span></div>
             <div class="stat-card">🖨️ Принтеры: <span id="printerCount">0</span></div>
@@ -280,10 +269,15 @@
     <div class="token-panel" id="tokenPanel">
         <strong>🔑 Настройка доступа к GitHub</strong>
         <input type="password" id="githubToken" placeholder="Введите GitHub Personal Access Token (ghp_...)" style="margin-top: 12px;">
-        <small style="display: block; margin-bottom: 12px;">Нужны права: repo, issues. Токен сохранится в браузере</small>
+        <small style="display: block; margin: 8px 0;">Нужны права: repo (для чтения и записи файлов). Токен сохранится в браузере</small>
+        <div class="file-info">
+            📁 <strong>Файл данных:</strong> data.json<br>
+            📂 <strong>Репозиторий:</strong> lQuickShadow/lQuickShadow.github.io
+        </div>
         <button id="saveTokenBtn">💾 Сохранить токен</button>
         <button id="clearTokenBtn" class="secondary">🗑️ Удалить токен</button>
-        <button id="loadDataBtn" class="success">📥 Загрузить склад</button>
+        <button id="loadDataBtn" class="success">📥 Загрузить из data.json</button>
+        <button id="saveToGitBtn" class="success" disabled>💾 Сохранить в data.json</button>
     </div>
 
     <div class="card" id="addCard" style="display: none;">
@@ -297,12 +291,11 @@
                 <option value="other">📦 Другое</option>
             </select>
             <input type="number" id="itemQuantity" placeholder="Количество *" value="1">
-            <input type="text" id="itemLocation" placeholder="Место хранения (стеллаж, полка)">
+            <input type="text" id="itemLocation" placeholder="Место хранения">
         </div>
         <textarea id="itemNote" rows="2" placeholder="Дополнительные заметки (модель, серийный номер и т.д.)"></textarea>
         <div style="margin-top: 16px;">
             <button id="addItemBtn">➕ Добавить на склад</button>
-            <button id="syncToGitBtn" class="success" disabled>💾 Сохранить всё в GitHub</button>
         </div>
     </div>
 
@@ -314,7 +307,7 @@
                     <tr><th>Категория</th><th>Название</th><th>Кол-во</th><th>Место</th><th>Примечание</th><th>Действия</th></tr>
                 </thead>
                 <tbody id="tableBody">
-                    <tr><td colspan="6" style="text-align: center;">Загрузите данные из GitHub</td></tr>
+                    <tr><td colspan="6" style="text-align: center;">Загрузите данные из data.json</td></tr>
                 </tbody>
             </table>
         </div>
@@ -342,9 +335,12 @@
 
 <script>
     const REPO = 'lQuickShadow/lQuickShadow.github.io';
+    const FILE_PATH = 'data.json';
+    
     let inventory = [];
     let editIndex = null;
-    let token = localStorage.getItem('gh_sku_token');
+    let currentSha = null;
+    let token = localStorage.getItem('github_token_json');
 
     function showToast(msg, isError = false) {
         const toast = document.getElementById('statusToast');
@@ -409,7 +405,7 @@
         if (confirm('Удалить товар?')) {
             inventory.splice(idx, 1);
             renderTable();
-            showToast('✅ Товар удалён, не забудьте сохранить изменения в GitHub');
+            showToast('✅ Товар удалён, нажмите "Сохранить в data.json"');
         }
     };
 
@@ -426,7 +422,7 @@
             };
             renderTable();
             document.getElementById('editModal').style.display = 'none';
-            showToast('✏️ Товар обновлён, нажмите "Сохранить всё"');
+            showToast('✏️ Товар обновлён, нажмите "Сохранить в data.json"');
         }
     };
 
@@ -458,117 +454,137 @@
         document.getElementById('itemQuantity').value = '1';
         document.getElementById('itemLocation').value = '';
         document.getElementById('itemNote').value = '';
-        showToast('➕ Товар добавлен. Нажмите "Сохранить всё" для синхронизации с GitHub');
+        showToast('➕ Товар добавлен. Нажмите "Сохранить в data.json"');
     }
 
-    // Загрузка из GitHub Issues
+    // Загрузка из data.json через GitHub API
     async function loadFromGitHub() {
-        const t = localStorage.getItem('gh_sku_token');
+        const t = localStorage.getItem('github_token_json');
         if (!t) { showToast('Сначала сохраните GitHub токен', true); return false; }
-        showToast('Загрузка данных склада...');
+        
+        showToast('📥 Загрузка data.json...');
         try {
-            const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=all&per_page=100&labels=inventory`, {
-                headers: { 'Authorization': `Bearer ${t}`, 'Accept': 'application/vnd.github.v3+json' }
+            const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${t}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
             });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const issues = await res.json();
-            const items = [];
-            for (const issue of issues) {
-                if (issue.pull_request) continue;
-                try {
-                    const data = JSON.parse(issue.body);
-                    items.push({
-                        id: issue.number,
-                        name: data.name,
-                        category: data.category,
-                        quantity: data.quantity,
-                        location: data.location,
-                        note: data.note,
-                        updatedAt: issue.updated_at
-                    });
-                } catch(e) { console.warn('Ошибка парсинга issue', issue.number); }
+            
+            if (response.status === 200) {
+                const data = await response.json();
+                const content = atob(data.content);
+                inventory = JSON.parse(content);
+                currentSha = data.sha;
+                showToast(`✅ Загружено ${inventory.length} позиций из data.json`);
+            } else if (response.status === 404) {
+                inventory = [];
+                currentSha = null;
+                showToast('📝 Файл data.json не найден. Будет создан при сохранении');
+            } else {
+                const error = await response.json();
+                throw new Error(error.message);
             }
-            inventory = items;
+            
             renderTable();
             document.getElementById('addCard').style.display = 'block';
             document.getElementById('listCard').style.display = 'block';
-            document.getElementById('syncToGitBtn').disabled = false;
-            showToast(`✅ Загружено ${inventory.length} позиций`);
+            document.getElementById('saveToGitBtn').disabled = false;
             return true;
         } catch(e) {
-            showToast('Ошибка загрузки: ' + e.message, true);
+            showToast('❌ Ошибка загрузки: ' + e.message, true);
             return false;
         }
     }
 
-    // Сохранение всех позиций в Issues
-    async function syncAllToGit() {
-        const t = localStorage.getItem('gh_sku_token');
-        if (!t) { showToast('Токен не найден', true); return; }
-        if (!inventory.length) { showToast('Нет товаров для сохранения', true); return; }
-        showToast('Синхронизация с GitHub...');
-
-        for (let i = 0; i < inventory.length; i++) {
-            const item = inventory[i];
-            const body = JSON.stringify({
-                name: item.name,
-                category: item.category,
-                quantity: item.quantity,
-                location: item.location,
-                note: item.note
-            });
-            try {
-                if (item.id && typeof item.id === 'number') {
-                    // Обновление существующего issue
-                    await fetch(`https://api.github.com/repos/${REPO}/issues/${item.id}`, {
-                        method: 'PATCH',
-                        headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title: `${item.category.toUpperCase()}: ${item.name}`, body, labels: ['inventory'] })
-                    });
-                } else {
-                    // Создание нового issue
-                    const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ title: `${item.category.toUpperCase()}: ${item.name}`, body, labels: ['inventory'] })
-                    });
-                    const newIssue = await res.json();
-                    item.id = newIssue.number;
-                }
-            } catch(e) {
-                showToast(`Ошибка при сохранении ${item.name}`, true);
-            }
+    // Сохранение в data.json через GitHub API
+    async function saveToGitHub() {
+        const t = localStorage.getItem('github_token_json');
+        if (!t) { showToast('Токен не найден', true); return false; }
+        
+        if (inventory.length === 0) {
+            if (!confirm('Склад пуст. Сохранить пустой файл?')) return false;
         }
-        showToast(`✅ Сохранено ${inventory.length} позиций в GitHub Issues`);
-        await loadFromGitHub(); // перезагрузка для обновления id
+        
+        showToast('💾 Сохранение в data.json...');
+        
+        const jsonData = JSON.stringify(inventory, null, 2);
+        const content = btoa(unescape(encodeURIComponent(jsonData)));
+        
+        const url = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+        const body = {
+            message: `Обновление склада: ${new Date().toLocaleString('ru-RU')}`,
+            content: content,
+            branch: 'main'
+        };
+        
+        if (currentSha) {
+            body.sha = currentSha;
+        }
+        
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${t}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                currentSha = result.content.sha;
+                showToast(`✅ Сохранено ${inventory.length} позиций в data.json`);
+                return true;
+            } else {
+                const error = await response.json();
+                throw new Error(error.message);
+            }
+        } catch(e) {
+            showToast('❌ Ошибка сохранения: ' + e.message, true);
+            return false;
+        }
     }
 
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+    function escapeHtml(str) { 
+        if (!str) return ''; 
+        return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); 
+    }
 
     // Сохранение токена
     document.getElementById('saveTokenBtn').onclick = () => {
         const newToken = document.getElementById('githubToken').value.trim();
         if (newToken && newToken.startsWith('ghp_')) {
-            localStorage.setItem('gh_sku_token', newToken);
+            localStorage.setItem('github_token_json', newToken);
             token = newToken;
-            showToast('✅ Токен сохранён');
+            showToast('✅ Токен сохранён в браузере');
             document.getElementById('githubToken').value = '';
-        } else showToast('Неверный формат токена (должен начинаться с ghp_)', true);
+        } else {
+            showToast('❌ Неверный формат токена (должен начинаться с ghp_)', true);
+        }
     };
+    
     document.getElementById('clearTokenBtn').onclick = () => {
-        localStorage.removeItem('gh_sku_token');
+        localStorage.removeItem('github_token_json');
         token = null;
-        showToast('Токен удалён');
+        showToast('🗑️ Токен удалён');
         document.getElementById('addCard').style.display = 'none';
         document.getElementById('listCard').style.display = 'none';
+        document.getElementById('saveToGitBtn').disabled = true;
     };
+    
     document.getElementById('loadDataBtn').onclick = loadFromGitHub;
-    document.getElementById('syncToGitBtn').onclick = syncAllToGit;
+    document.getElementById('saveToGitBtn').onclick = saveToGitHub;
     document.getElementById('addItemBtn').onclick = addItem;
 
-    if (localStorage.getItem('gh_sku_token')) {
+    // Если токен уже есть, показываем интерфейс
+    if (localStorage.getItem('github_token_json')) {
         document.getElementById('addCard').style.display = 'block';
         document.getElementById('listCard').style.display = 'block';
+        document.getElementById('saveToGitBtn').disabled = false;
         loadFromGitHub();
     }
 </script>
