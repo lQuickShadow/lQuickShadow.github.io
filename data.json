@@ -1,2 +1,47 @@
 [
+  {
+    "id": 1743012345678,
+    "name": "HP LaserJet 1018",
+    "category": "printer",
+    "quantity": 5,
+    "location": "Стеллаж А-2",
+    "note": "Картридж 2612A, требуется заправка",
+    "createdAt": "2025-03-27T10:00:00.000Z"
+  },
+  {
+    "id": 1743012345679,
+    "name": "Кабель USB-C 2м",
+    "category": "cable",
+    "quantity": 23,
+    "location": "Ящик №3",
+    "note": "Поддержка быстрой зарядки",
+    "createdAt": "2025-03-27T10:05:00.000Z"
+  },
+  {
+    "id": 1743012345680,
+    "name": "Logitech MX Master 3S",
+    "category": "mouse",
+    "quantity": 8,
+    "location": "Витрина B-1",
+    "note": "Беспроводная, белая",
+    "createdAt": "2025-03-27T10:10:00.000Z"
+  },
+  {
+    "id": 1743012345681,
+    "name": "Кабель HDMI 1.5м",
+    "category": "cable",
+    "quantity": 45,
+    "location": "Ящик №2",
+    "note": "Версия 2.0, 4K",
+    "createdAt": "2025-03-27T10:15:00.000Z"
+  },
+  {
+    "id": 1743012345682,
+    "name": "Canon PIXMA G3410",
+    "category": "printer",
+    "quantity": 2,
+    "location": "Стеллаж А-3",
+    "note": "СНПЧ, цветной",
+    "createdAt": "2025-03-27T10:20:00.000Z"
+  }
 ]
