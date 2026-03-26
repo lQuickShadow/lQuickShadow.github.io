@@ -3,578 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Data Storage - lQuickShadow.github.io</title>
+    <title>Складской учёт | Принтеры, кабели, мышки</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 24px;
         }
-        
+
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 0 auto;
         }
-        
+
+        /* Header */
         .header {
-            text-align: center;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 28px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
             color: white;
-            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        
+
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
         }
-        
+
         .header p {
-            opacity: 0.9;
+            opacity: 0.8;
+            font-size: 0.95rem;
         }
-        
+
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+
+        .stat-card span {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-right: 8px;
+        }
+
+        /* Cards */
         .card {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         }
-        
+
         .card h2 {
-            color: #333;
+            font-size: 1.4rem;
             margin-bottom: 20px;
-            font-size: 1.5rem;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
-        .form-group {
+
+        /* Форма добавления */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
             margin-bottom: 20px;
         }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        input, textarea {
+
+        input, select, textarea {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 14px;
+            transition: all 0.2s;
             font-family: inherit;
         }
-        
-        input:focus, textarea:focus {
+
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
         }
-        
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        
+
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #3b82f6;
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 40px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: #2563eb;
+            transform: translateY(-1px);
         }
-        
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+
+        button.secondary {
+            background: #64748b;
         }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+
+        button.danger {
+            background: #ef4444;
         }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+
+        button.warning {
+            background: #f59e0b;
         }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+
+        button.success {
+            background: #10b981;
         }
-        
-        .data-list {
-            max-height: 500px;
-            overflow-y: auto;
+
+        /* Таблица товаров */
+        .table-container {
+            overflow-x: auto;
         }
-        
-        .data-item {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s;
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        
-        .data-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        th, td {
+            padding: 16px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
         }
-        
-        .data-item h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
-        .data-item p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            white-space: pre-wrap;
+
+        tr:hover {
+            background: #f8fafc;
         }
-        
-        .data-item .meta {
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 40px;
             font-size: 12px;
-            color: #999;
-            margin-top: 10px;
+            font-weight: 600;
         }
-        
-        .data-item-actions {
-            margin-top: 15px;
+
+        .category-printer { background: #dbeafe; color: #1e40af; }
+        .category-cable { background: #dcfce7; color: #166534; }
+        .category-mouse { background: #fef9c3; color: #854d0e; }
+        .category-other { background: #f1f5f9; color: #475569; }
+
+        .quantity-low { color: #ef4444; font-weight: bold; }
+        .quantity-medium { color: #f59e0b; }
+        .quantity-high { color: #10b981; }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        
-        .data-item-actions button {
+
+        .action-buttons button {
             padding: 6px 12px;
             font-size: 12px;
-            margin-right: 8px;
         }
-        
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
+
+        /* Токен панель */
+        .token-panel {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
-        
-        .empty-state svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        
-        .status {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 10px;
+
+        .token-panel input {
             background: white;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
+            margin-bottom: 12px;
         }
-        
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border-left: 4px solid #28a745;
-        }
-        
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border-left: 4px solid #dc3545;
-        }
-        
-        .status.loading {
-            background: #cfe2ff;
-            color: #084298;
-            border-left: 4px solid #0d6efd;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .token-info {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .repo-badge {
-            background: #e7f3ff;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-family: monospace;
+
+        /* Статус */
+        .status-toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 48px;
             font-size: 14px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+
+        /* Модалка редактирования */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        
-        .stat {
-            flex: 1;
-            text-align: center;
+
+        .modal-content {
+            background: white;
+            border-radius: 28px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
         }
-        
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-        
+
         @media (max-width: 768px) {
-            .card {
-                padding: 20px;
-            }
-            
-            button {
-                width: 100%;
-                margin-right: 0;
-            }
+            body { padding: 16px; }
+            .card { padding: 20px; }
+            th, td { padding: 12px 8px; font-size: 13px; }
+            .action-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📝 My Data Storage</h1>
-            <p>Хранилище данных на GitHub Pages</p>
-        </div>
-        
-        <div class="card">
-            <h2>🔐 Настройка подключения</h2>
-            <div class="token-info">
-                <strong>⚡ Ваш репозиторий:</strong> lQuickShadow.github.io<br>
-                <strong>📁 Файл данных:</strong> data.json<br>
-                <strong>🔑 Токен:</strong> Введите ваш GitHub токен (начинается с ghp_)
-            </div>
-            
-            <div class="form-group">
-                <label>🔑 GitHub Token</label>
-                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx" value="">
-                <small style="color: #666; display: block; margin-top: 5px;">Токен хранится только в вашем браузере</small>
-            </div>
-            
-            <button id="connectBtn" class="btn-success">🔌 Подключиться и загрузить данные</button>
-            <button id="saveToGitBtn" disabled>💾 Сохранить все данные в GitHub</button>
-        </div>
-        
-        <div class="card" id="dataCard" style="display: none;">
-            <h2>✏️ Добавить новую запись</h2>
-            <div class="form-group">
-                <label>📌 Заголовок</label>
-                <input type="text" id="title" placeholder="Введите заголовок...">
-            </div>
-            <div class="form-group">
-                <label>📄 Содержимое</label>
-                <textarea id="content" placeholder="Введите текст заметки..."></textarea>
-            </div>
-            <button id="addBtn">➕ Добавить запись</button>
-            
-            <div class="stats" id="stats" style="display: none;">
-                <div class="stat">
-                    <div class="stat-number" id="totalCount">0</div>
-                    <div class="stat-label">Всего записей</div>
-                </div>
-            </div>
-            
-            <h2 style="margin-top: 30px;">📋 Мои записи</h2>
-            <div id="dataContainer" class="data-list">
-                <div class="empty-state">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <p>Нет данных. Подключитесь к GitHub или добавьте первую запись!</p>
-                </div>
-            </div>
+<div class="container">
+    <div class="header">
+        <h1>
+            📦 Складской учёт
+        </h1>
+        <p>Принтеры, кабели, мышки и другие товары — данные хранятся в GitHub Issues</p>
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card">📊 Всего: <span id="totalCount">0</span></div>
+            <div class="stat-card">🖨️ Принтеры: <span id="printerCount">0</span></div>
+            <div class="stat-card">🔌 Кабели: <span id="cableCount">0</span></div>
+            <div class="stat-card">🐭 Мышки: <span id="mouseCount">0</span></div>
         </div>
     </div>
-    
-    <div id="status" class="status"></div>
 
-    <script>
-        const REPO = 'lQuickShadow/lQuickShadow.github.io';
-        const DEFAULT_FILE = 'data.json';
-        
-        let currentData = [];
-        let currentSha = null;
-        let isConnected = false;
-        
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = message;
-            statusDiv.className = `status ${type}`;
-            statusDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 3000);
+    <div class="token-panel" id="tokenPanel">
+        <strong>🔑 Настройка доступа к GitHub</strong>
+        <input type="password" id="githubToken" placeholder="Введите GitHub Personal Access Token (ghp_...)" style="margin-top: 12px;">
+        <small style="display: block; margin-bottom: 12px;">Нужны права: repo, issues. Токен сохранится в браузере</small>
+        <button id="saveTokenBtn">💾 Сохранить токен</button>
+        <button id="clearTokenBtn" class="secondary">🗑️ Удалить токен</button>
+        <button id="loadDataBtn" class="success">📥 Загрузить склад</button>
+    </div>
+
+    <div class="card" id="addCard" style="display: none;">
+        <h2>➕ Добавить товар</h2>
+        <div class="form-grid">
+            <input type="text" id="itemName" placeholder="Название товара *">
+            <select id="itemCategory">
+                <option value="printer">🖨️ Принтер</option>
+                <option value="cable">🔌 Кабель</option>
+                <option value="mouse">🐭 Мышь</option>
+                <option value="other">📦 Другое</option>
+            </select>
+            <input type="number" id="itemQuantity" placeholder="Количество *" value="1">
+            <input type="text" id="itemLocation" placeholder="Место хранения (стеллаж, полка)">
+        </div>
+        <textarea id="itemNote" rows="2" placeholder="Дополнительные заметки (модель, серийный номер и т.д.)"></textarea>
+        <div style="margin-top: 16px;">
+            <button id="addItemBtn">➕ Добавить на склад</button>
+            <button id="syncToGitBtn" class="success" disabled>💾 Сохранить всё в GitHub</button>
+        </div>
+    </div>
+
+    <div class="card" id="listCard" style="display: none;">
+        <h2>📋 Товары на складе</h2>
+        <div class="table-container">
+            <table id="itemsTable">
+                <thead>
+                    <tr><th>Категория</th><th>Название</th><th>Кол-во</th><th>Место</th><th>Примечание</th><th>Действия</th></tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="6" style="text-align: center;">Загрузите данные из GitHub</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="statusToast" class="status-toast"></div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>✏️ Редактировать товар</h3>
+        <input type="text" id="editName" placeholder="Название">
+        <select id="editCategory" style="margin-top: 12px;">
+            <option value="printer">Принтер</option><option value="cable">Кабель</option><option value="mouse">Мышь</option><option value="other">Другое</option>
+        </select>
+        <input type="number" id="editQuantity" placeholder="Количество" style="margin-top: 12px;">
+        <input type="text" id="editLocation" placeholder="Место" style="margin-top: 12px;">
+        <textarea id="editNote" rows="2" placeholder="Примечание" style="margin-top: 12px;"></textarea>
+        <div style="margin-top: 20px; display: flex; gap: 12px;">
+            <button id="saveEditBtn">💾 Сохранить</button>
+            <button id="closeModalBtn" class="secondary">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const REPO = 'lQuickShadow/lQuickShadow.github.io';
+    let inventory = [];
+    let editIndex = null;
+    let token = localStorage.getItem('gh_sku_token');
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('statusToast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        toast.style.background = isError ? '#ef4444' : '#10b981';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    function updateStats() {
+        document.getElementById('totalCount').innerText = inventory.length;
+        document.getElementById('printerCount').innerText = inventory.filter(i => i.category === 'printer').length;
+        document.getElementById('cableCount').innerText = inventory.filter(i => i.category === 'cable').length;
+        document.getElementById('mouseCount').innerText = inventory.filter(i => i.category === 'mouse').length;
+    }
+
+    function getQuantityClass(qty) {
+        if (qty <= 2) return 'quantity-low';
+        if (qty <= 10) return 'quantity-medium';
+        return 'quantity-high';
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        if (!inventory.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">📭 Склад пуст, добавьте товары</td></tr>';
+            updateStats();
+            return;
         }
-        
-        async function loadFromGitHub() {
-            const token = document.getElementById('githubToken').value;
-            
-            if (!token) {
-                showStatus('❌ Введите GitHub Token', 'error');
-                return false;
-            }
-            
-            if (!token.startsWith('ghp_')) {
-                showStatus('❌ Токен должен начинаться с ghp_', 'error');
-                return false;
-            }
-            
-            showStatus('📥 Загрузка данных из GitHub...', 'loading');
-            
-            try {
-                const url = `https://api.github.com/repos/${REPO}/contents/${DEFAULT_FILE}`;
-                const response = await fetch(url, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (response.status === 200) {
-                    const data = await response.json();
-                    const content = atob(data.content);
-                    currentData = JSON.parse(content);
-                    currentSha = data.sha;
-                    showStatus(`✅ Загружено ${currentData.length} записей`, 'success');
-                    return true;
-                } else if (response.status === 404) {
-                    currentData = [];
-                    currentSha = null;
-                    showStatus('📝 Файл data.json будет создан при первом сохранении', 'success');
-                    return true;
-                } else {
-                    const error = await response.json();
-                    showStatus(`❌ Ошибка: ${error.message}`, 'error');
-                    return false;
-                }
-            } catch (error) {
-                showStatus(`❌ Ошибка подключения: ${error.message}`, 'error');
-                return false;
-            }
+        tbody.innerHTML = inventory.map((item, idx) => {
+            const categoryMap = { printer: '🖨️ Принтер', cable: '🔌 Кабель', mouse: '🐭 Мышь', other: '📦 Другое' };
+            const categoryClass = `category-${item.category === 'printer' ? 'printer' : item.category === 'cable' ? 'cable' : item.category === 'mouse' ? 'mouse' : 'other'}`;
+            return `
+                <tr>
+                    <td><span class="category-badge ${categoryClass}">${categoryMap[item.category]}</span></td>
+                    <td><strong>${escapeHtml(item.name)}</strong></td>
+                    <td class="${getQuantityClass(item.quantity)}">${item.quantity} шт.</td>
+                    <td>${escapeHtml(item.location || '—')}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(item.note || '')}</td>
+                    <td class="action-buttons">
+                        <button onclick="openEditModal(${idx})" class="warning" style="background:#f59e0b;">✏️</button>
+                        <button onclick="deleteItem(${idx})" class="danger" style="background:#ef4444;">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+        updateStats();
+    }
+
+    window.openEditModal = (idx) => {
+        const item = inventory[idx];
+        editIndex = idx;
+        document.getElementById('editName').value = item.name;
+        document.getElementById('editCategory').value = item.category;
+        document.getElementById('editQuantity').value = item.quantity;
+        document.getElementById('editLocation').value = item.location || '';
+        document.getElementById('editNote').value = item.note || '';
+        document.getElementById('editModal').style.display = 'flex';
+    };
+
+    window.deleteItem = (idx) => {
+        if (confirm('Удалить товар?')) {
+            inventory.splice(idx, 1);
+            renderTable();
+            showToast('✅ Товар удалён, не забудьте сохранить изменения в GitHub');
         }
-        
-        async function saveToGitHub() {
-            const token = document.getElementById('githubToken').value;
-            
-            if (!token) {
-                showStatus('❌ Введите GitHub Token', 'error');
-                return false;
-            }
-            
-            showStatus('💾 Сохранение в GitHub...', 'loading');
-            
-            const jsonData = JSON.stringify(currentData, null, 2);
-            const content = btoa(unescape(encodeURIComponent(jsonData)));
-            
-            const url = `https://api.github.com/repos/${REPO}/contents/${DEFAULT_FILE}`;
-            const body = {
-                message: `Update data: ${new Date().toLocaleString('ru-RU')}`,
-                content: content,
-                branch: 'main'
+    };
+
+    document.getElementById('saveEditBtn').onclick = () => {
+        if (editIndex !== null) {
+            inventory[editIndex] = {
+                ...inventory[editIndex],
+                name: document.getElementById('editName').value.trim() || 'Без названия',
+                category: document.getElementById('editCategory').value,
+                quantity: parseInt(document.getElementById('editQuantity').value) || 0,
+                location: document.getElementById('editLocation').value,
+                note: document.getElementById('editNote').value,
+                updatedAt: new Date().toISOString()
             };
-            
-            if (currentSha) {
-                body.sha = currentSha;
-            }
-            
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    currentSha = result.content.sha;
-                    showStatus(`✅ Сохранено ${currentData.length} записей в data.json`, 'success');
-                    updateStats();
-                    return true;
-                } else {
-                    const error = await response.json();
-                    showStatus(`❌ Ошибка: ${error.message}`, 'error');
-                    return false;
-                }
-            } catch (error) {
-                showStatus(`❌ Ошибка: ${error.message}`, 'error');
-                return false;
-            }
+            renderTable();
+            document.getElementById('editModal').style.display = 'none';
+            showToast('✏️ Товар обновлён, нажмите "Сохранить всё"');
         }
-        
-        function renderDataList() {
-            const container = document.getElementById('dataContainer');
-            const statsDiv = document.getElementById('stats');
-            
-            if (!currentData || currentData.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <p>Нет данных. Добавьте первую запись!</p>
-                    </div>
-                `;
-                statsDiv.style.display = 'none';
-                return;
-            }
-            
-            statsDiv.style.display = 'flex';
-            document.getElementById('totalCount').textContent = currentData.length;
-            
-            container.innerHTML = currentData.map((item, index) => `
-                <div class="data-item">
-                    <h3>${escapeHtml(item.title || 'Без заголовка')}</h3>
-                    <p>${escapeHtml(item.content || '')}</p>
-                    <div class="meta">
-                        📅 ${new Date(item.timestamp).toLocaleString('ru-RU')}
-                    </div>
-                    <div class="data-item-actions">
-                        <button onclick="editItem(${index})" style="background: #ffc107; color: #333;">✏️ Редактировать</button>
-                        <button onclick="deleteItem(${index})" style="background: #dc3545;">🗑️ Удалить</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        window.editItem = function(index) {
-            const item = currentData[index];
-            const newTitle = prompt('Редактировать заголовок:', item.title);
-            if (newTitle !== null) item.title = newTitle;
-            const newContent = prompt('Редактировать содержимое:', item.content);
-            if (newContent !== null) item.content = newContent;
-            item.timestamp = Date.now();
-            renderDataList();
-            showStatus('✏️ Запись изменена. Нажмите "Сохранить" для отправки в GitHub', 'success');
-        };
-        
-        window.deleteItem = function(index) {
-            if (confirm('Удалить эту запись?')) {
-                currentData.splice(index, 1);
-                renderDataList();
-                showStatus('🗑️ Запись удалена', 'success');
-            }
-        };
-        
-        function addData() {
-            const title = document.getElementById('title').value.trim();
-            const content = document.getElementById('content').value.trim();
-            
-            if (!title && !content) {
-                showStatus('❌ Заполните хотя бы одно поле', 'error');
-                return;
-            }
-            
-            currentData.unshift({
-                id: Date.now(),
-                title: title,
-                content: content,
-                timestamp: Date.now()
+    };
+
+    document.getElementById('closeModalBtn').onclick = () => {
+        document.getElementById('editModal').style.display = 'none';
+    };
+
+    function addItem() {
+        const name = document.getElementById('itemName').value.trim();
+        const category = document.getElementById('itemCategory').value;
+        const quantity = parseInt(document.getElementById('itemQuantity').value) || 0;
+        const location = document.getElementById('itemLocation').value.trim();
+        const note = document.getElementById('itemNote').value.trim();
+
+        if (!name) { showToast('Введите название товара', true); return; }
+        if (quantity < 0) { showToast('Количество не может быть отрицательным', true); return; }
+
+        inventory.unshift({
+            id: Date.now(),
+            name,
+            category,
+            quantity,
+            location,
+            note,
+            createdAt: new Date().toISOString()
+        });
+        renderTable();
+        document.getElementById('itemName').value = '';
+        document.getElementById('itemQuantity').value = '1';
+        document.getElementById('itemLocation').value = '';
+        document.getElementById('itemNote').value = '';
+        showToast('➕ Товар добавлен. Нажмите "Сохранить всё" для синхронизации с GitHub');
+    }
+
+    // Загрузка из GitHub Issues
+    async function loadFromGitHub() {
+        const t = localStorage.getItem('gh_sku_token');
+        if (!t) { showToast('Сначала сохраните GitHub токен', true); return false; }
+        showToast('Загрузка данных склада...');
+        try {
+            const res = await fetch(`https://api.github.com/repos/${REPO}/issues?state=all&per_page=100&labels=inventory`, {
+                headers: { 'Authorization': `Bearer ${t}`, 'Accept': 'application/vnd.github.v3+json' }
             });
-            
-            document.getElementById('title').value = '';
-            document.getElementById('content').value = '';
-            
-            renderDataList();
-            showStatus('✅ Данные добавлены! Нажмите "Сохранить" для отправки в GitHub', 'success');
-        }
-        
-        function updateStats() {
-            const total = currentData.length;
-            document.getElementById('totalCount').textContent = total;
-        }
-        
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-        
-        async function connect() {
-            const token = document.getElementById('githubToken').value;
-            if (!token) {
-                showStatus('❌ Введите GitHub Token', 'error');
-                return;
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const issues = await res.json();
+            const items = [];
+            for (const issue of issues) {
+                if (issue.pull_request) continue;
+                try {
+                    const data = JSON.parse(issue.body);
+                    items.push({
+                        id: issue.number,
+                        name: data.name,
+                        category: data.category,
+                        quantity: data.quantity,
+                        location: data.location,
+                        note: data.note,
+                        updatedAt: issue.updated_at
+                    });
+                } catch(e) { console.warn('Ошибка парсинга issue', issue.number); }
             }
-            
-            localStorage.setItem('github_token_backup', token);
-            
-            const success = await loadFromGitHub();
-            if (success) {
-                isConnected = true;
-                document.getElementById('dataCard').style.display = 'block';
-                document.getElementById('saveToGitBtn').disabled = false;
-                renderDataList();
-                showStatus('✅ Подключение успешно!', 'success');
+            inventory = items;
+            renderTable();
+            document.getElementById('addCard').style.display = 'block';
+            document.getElementById('listCard').style.display = 'block';
+            document.getElementById('syncToGitBtn').disabled = false;
+            showToast(`✅ Загружено ${inventory.length} позиций`);
+            return true;
+        } catch(e) {
+            showToast('Ошибка загрузки: ' + e.message, true);
+            return false;
+        }
+    }
+
+    // Сохранение всех позиций в Issues
+    async function syncAllToGit() {
+        const t = localStorage.getItem('gh_sku_token');
+        if (!t) { showToast('Токен не найден', true); return; }
+        if (!inventory.length) { showToast('Нет товаров для сохранения', true); return; }
+        showToast('Синхронизация с GitHub...');
+
+        for (let i = 0; i < inventory.length; i++) {
+            const item = inventory[i];
+            const body = JSON.stringify({
+                name: item.name,
+                category: item.category,
+                quantity: item.quantity,
+                location: item.location,
+                note: item.note
+            });
+            try {
+                if (item.id && typeof item.id === 'number') {
+                    // Обновление существующего issue
+                    await fetch(`https://api.github.com/repos/${REPO}/issues/${item.id}`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title: `${item.category.toUpperCase()}: ${item.name}`, body, labels: ['inventory'] })
+                    });
+                } else {
+                    // Создание нового issue
+                    const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title: `${item.category.toUpperCase()}: ${item.name}`, body, labels: ['inventory'] })
+                    });
+                    const newIssue = await res.json();
+                    item.id = newIssue.number;
+                }
+            } catch(e) {
+                showToast(`Ошибка при сохранении ${item.name}`, true);
             }
         }
-        
-        // Загрузка сохранённого токена
-        const savedToken = localStorage.getItem('github_token_backup');
-        if (savedToken) {
-            document.getElementById('githubToken').value = savedToken;
-        }
-        
-        document.getElementById('connectBtn').addEventListener('click', connect);
-        document.getElementById('saveToGitBtn').addEventListener('click', saveToGitHub);
-        document.getElementById('addBtn').addEventListener('click', addData);
-    </script>
+        showToast(`✅ Сохранено ${inventory.length} позиций в GitHub Issues`);
+        await loadFromGitHub(); // перезагрузка для обновления id
+    }
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+
+    // Сохранение токена
+    document.getElementById('saveTokenBtn').onclick = () => {
+        const newToken = document.getElementById('githubToken').value.trim();
+        if (newToken && newToken.startsWith('ghp_')) {
+            localStorage.setItem('gh_sku_token', newToken);
+            token = newToken;
+            showToast('✅ Токен сохранён');
+            document.getElementById('githubToken').value = '';
+        } else showToast('Неверный формат токена (должен начинаться с ghp_)', true);
+    };
+    document.getElementById('clearTokenBtn').onclick = () => {
+        localStorage.removeItem('gh_sku_token');
+        token = null;
+        showToast('Токен удалён');
+        document.getElementById('addCard').style.display = 'none';
+        document.getElementById('listCard').style.display = 'none';
+    };
+    document.getElementById('loadDataBtn').onclick = loadFromGitHub;
+    document.getElementById('syncToGitBtn').onclick = syncAllToGit;
+    document.getElementById('addItemBtn').onclick = addItem;
+
+    if (localStorage.getItem('gh_sku_token')) {
+        document.getElementById('addCard').style.display = 'block';
+        document.getElementById('listCard').style.display = 'block';
+        loadFromGitHub();
+    }
+</script>
 </body>
 </html>
