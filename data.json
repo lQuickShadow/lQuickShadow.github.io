@@ -1,5 +1,14 @@
 [
   {
+    "id": 1774528567770,
+    "name": "ффф",
+    "category": "printer",
+    "quantity": 3142,
+    "location": "вфывфы",
+    "note": "ычясчясф",
+    "createdAt": "2026-03-26T12:36:07.770Z"
+  },
+  {
     "id": 1743012345678,
     "name": "HP LaserJet 1018",
     "category": "printer",
